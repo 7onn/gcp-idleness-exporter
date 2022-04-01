@@ -5,7 +5,7 @@ metadata:
   labels:
     {{- include "gcp-idle-resources-metrics.labels" . | nindent 4 }}
     {{- with .Values.customLabels }}
-    {{ toYaml . | nindent 4 }}
+    {{- toYaml . | nindent 4 }}
     {{- end }}
 spec:
   replicas: {{ .Values.replicaCount }}
@@ -21,7 +21,7 @@ spec:
       labels:
         {{- include "gcp-idle-resources-metrics.selectorLabels" . | nindent 8 }}
         {{- with .Values.customLabels }}
-        {{ toYaml . | nindent 8 }}
+        {{- toYaml . | nindent 8 }}
         {{- end }}
     spec:
       {{- with .Values.imagePullSecrets }}
@@ -49,6 +49,10 @@ spec:
             httpGet:
               path: /health
               port: http
+          env:
+            {{- with .Values.env }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
