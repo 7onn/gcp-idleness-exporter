@@ -49,11 +49,14 @@ service:
   port: 80
   targetPort: 5000
 
+# -- Workload's environment variables
 env:
-  # -- GCP Project ID to monitor
-  GCP_PROJECT_ID: ""
-  # -- Comma-separated regions to monitor (e.g: us-central1,us-east1,southamerica-east1)
-  GCP_REGIONS: ""
+# -- GCP Project ID to monitor
+- name: GCP_PROJECT_ID
+  value: ""
+# -- Comma-separated regions to monitor (e.g: us-central1,us-east1,southamerica-east1)
+- name: GCP_REGIONS
+  value: ""
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious

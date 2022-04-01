@@ -1,6 +1,6 @@
 # gcp-idle-resources-metrics
 
-![Version: 0.4.0](https://img.shields.io/badge/Version-0.4.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v0.0.1](https://img.shields.io/badge/AppVersion-v0.0.1-informational?style=flat-square)
+![Version: 0.4.1](https://img.shields.io/badge/Version-0.4.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v0.0.1](https://img.shields.io/badge/AppVersion-v0.0.1-informational?style=flat-square)
 
 A Helm chart for running gcp-idle-resources-metrics on Kubernetes
 
@@ -10,8 +10,9 @@ A Helm chart for running gcp-idle-resources-metrics on Kubernetes
 |-----|------|---------|-------------|
 | affinity | object | `{}` |  |
 | customLabels | object | `{}` | Custom labels to apply on every resource managed by this Chart |
-| env.GCP_PROJECT_ID | string | `""` | GCP Project ID to monitor |
-| env.GCP_REGIONS | string | `""` | Comma-separated regions to monitor (e.g: us-central1,us-east1,southamerica-east1) |
+| env | list | `[{"name":"GCP_PROJECT_ID","value":""},{"name":"GCP_REGIONS","value":""}]` | Workload's environment variables |
+| env[0] | object | `{"name":"GCP_PROJECT_ID","value":""}` | GCP Project ID to monitor |
+| env[1] | object | `{"name":"GCP_REGIONS","value":""}` | Comma-separated regions to monitor (e.g: us-central1,us-east1,southamerica-east1) |
 | fullnameOverride | string | `""` |  |
 | image | object | `{"pullPolicy":"IfNotPresent","repository":"devbytom/gcp-idle-resources-metrics","tag":""}` | Container image |
 | imagePullSecrets | list | `[]` |  |
