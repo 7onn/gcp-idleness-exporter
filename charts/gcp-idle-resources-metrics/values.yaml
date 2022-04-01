@@ -4,6 +4,7 @@
 
 replicaCount: 1
 
+# -- Container image
 image:
   repository: devbytom/gcp-idle-resources-metrics
   pullPolicy: IfNotPresent
@@ -14,16 +15,18 @@ imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
+# -- Custom labels to apply on every resource managed by this Chart
+customLabels: {}
+
 serviceAccount:
-  # Specifies whether a service account should be created
+  # -- Specifies whether a service account should be created
   create: true
-  # Annotations to add to the service account
+  # -- Annotations to add to the service account
   annotations: {}
-  # The name of the service account to use.
-  # If not set and create is true, a name is generated using the fullname template
+  # -- The name of the service account to use. If not set and create is true, a name is generated using the fullname template
   name: ""
 
-# Whether to create a Prometheus operator ServiceMonitor resource
+# -- Whether to create a Prometheus operator ServiceMonitor resource
 serviceMonitor:
   create: false
   scrapeInterval: 5m

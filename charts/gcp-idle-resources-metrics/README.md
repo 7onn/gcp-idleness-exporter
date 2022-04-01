@@ -1,6 +1,6 @@
 # gcp-idle-resources-metrics
 
-![Version: 0.2.0](https://img.shields.io/badge/Version-0.2.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v0.0.1](https://img.shields.io/badge/AppVersion-v0.0.1-informational?style=flat-square)
+![Version: 0.3.0](https://img.shields.io/badge/Version-0.3.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v0.0.1](https://img.shields.io/badge/AppVersion-v0.0.1-informational?style=flat-square)
 
 A Helm chart for running gcp-idle-resources-metrics on Kubernetes
 
@@ -9,10 +9,9 @@ A Helm chart for running gcp-idle-resources-metrics on Kubernetes
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | affinity | object | `{}` |  |
+| customLabels | object | `{}` | Custom labels to apply on every resource managed by this Chart |
 | fullnameOverride | string | `""` |  |
-| image.pullPolicy | string | `"IfNotPresent"` |  |
-| image.repository | string | `"devbytom/gcp-idle-resources-metrics"` |  |
-| image.tag | string | `""` |  |
+| image | object | `{"pullPolicy":"IfNotPresent","repository":"devbytom/gcp-idle-resources-metrics","tag":""}` | Container image |
 | imagePullSecrets | list | `[]` |  |
 | nameOverride | string | `""` |  |
 | nodeSelector | object | `{}` |  |
@@ -24,11 +23,10 @@ A Helm chart for running gcp-idle-resources-metrics on Kubernetes
 | service.port | int | `80` |  |
 | service.targetPort | int | `5000` |  |
 | service.type | string | `"ClusterIP"` |  |
-| serviceAccount.annotations | object | `{}` |  |
-| serviceAccount.create | bool | `true` |  |
-| serviceAccount.name | string | `""` |  |
-| serviceMonitor.create | bool | `false` |  |
-| serviceMonitor.scrapeInterval | string | `"5m"` |  |
+| serviceAccount.annotations | object | `{}` | Annotations to add to the service account |
+| serviceAccount.create | bool | `true` | Specifies whether a service account should be created |
+| serviceAccount.name | string | `""` | The name of the service account to use. If not set and create is true, a name is generated using the fullname template |
+| serviceMonitor | object | `{"create":false,"scrapeInterval":"5m"}` | Whether to create a Prometheus operator ServiceMonitor resource |
 | tolerations | list | `[]` |  |
 
 ----------------------------------------------
