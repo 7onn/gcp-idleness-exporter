@@ -50,8 +50,6 @@ var (
 func main() {
 	var (
 		listenAddress = kingpin.Flag("listen-address", "Address to listen on for web interface and telemetry.").Envar("LISTEN_ADDRESS").Default(":5000").String()
-		metricsPath   = kingpin.Flag("metrics-path", "Path under which to expose metrics.").Default("/metrics").Envar("METRICS_PATH").String()
-		probePath     = kingpin.Flag("probe-path", "Path under which to respond readiness probe").Envar("HEALTHCHECK_PATH").Default("/health").String()
 	)
 
 	kingpin.Version(version.Print("gcp-idle-resources-metrics"))
@@ -106,9 +104,9 @@ func main() {
 	log.Info().Msgf("Google Project: %s", *gcpProjectID)
 	log.Info().Msgf("Listening on %s", *listenAddress)
 
-	http.Handle(*metricsPath, promhttp.Handler())
+	http.Handle("/metrics", promhttp.Handler())
 
-	http.HandleFunc(*probePath, func(w http.ResponseWriter, r *http.Request) {
+	http.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("aaa aaa aaa aaa staying alive staying alive"))
 	})
 
@@ -119,9 +117,9 @@ func main() {
 					<title>GCP idle resources metrics exporter</title>
 				</head>
 				<body>
-					<h1>GCP idle resources metrics exporter Exporter</h1>
+					<h1>GCP idle resources metrics exporter</h1>
 					<p>
-						<a href='` + *metricsPath + `'>Metrics</a>
+						<a href='/metrics'>Metrics</a>
 					</p>
 				</body>
 			</html>`))
