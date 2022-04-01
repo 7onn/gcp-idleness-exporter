@@ -30,7 +30,7 @@ jobs:
 
       - name: Build
         run: |
-          docker build -t devbytom/gcp-idle-resources-metrics:${{ github.payload.head }} .
+          docker build -t devbytom/gcp-idle-resources-metrics:${{ github.sha }} .
   
   publish:
     needs: build
@@ -51,4 +51,4 @@ jobs:
 
       - name: Publish
         run: |
-          docker push devbytom/gcp-idle-resources-metrics:${{ github.payload.head }}
+          docker push devbytom/gcp-idle-resources-metrics:${{ github.sha }}
