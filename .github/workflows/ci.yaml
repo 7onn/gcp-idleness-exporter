@@ -4,10 +4,12 @@ on:
       - main
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 1
 
       - name: Setup Golang
         uses: actions/setup-go@v1
@@ -17,27 +19,27 @@ jobs:
       - name: Test
         run: go test ./...
 
-      - name: Build
-        run: |
-          docker build -t devbytom/gcp-idle-resources-metrics:${{ github.sha }} .
-  
   publish:
-    needs: build
+    needs: test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 1
 
       - name: Setup Golang
         uses: actions/setup-go@v1
         with:
           go-version: 1.18
-      
-      - name: Setup DockerHub
-        uses: Mitigram/gh-action-docker-login@main
-        with:
-          username: devbytom
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Publish
-        run: |
-          docker push devbytom/gcp-idle-resources-metrics:${{ github.sha }}
+      - name: Build and Publish
+        uses: opspresso/action-docker@master
+        with:
+          args: --docker --TAG=${{ github.sha }}
+        env:
+          USERNAME: devbytom
+          PASSWORD: ${{ secrets.DOCKERHUB_TOKEN }}
+          DOCKERFILE: "Dockerfile"
+          IMAGE_NAME: "devbytom/gcp-idle-resources-metrics"
+          TAG_NAME: ${{ github.sha }}
+          LATEST: "true"
