@@ -26,6 +26,7 @@ serviceAccount:
 # Whether to create a Prometheus operator ServiceMonitor resource
 serviceMonitor:
   create: false
+  scrapeInterval: 5m
 
 podAnnotations: {}
 
