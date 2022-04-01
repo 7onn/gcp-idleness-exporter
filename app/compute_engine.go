@@ -15,8 +15,8 @@ import (
 )
 
 var (
-	isMachineRunning = prometheus.NewDesc("is_machine_running", "tells whether the VM is running", []string{"project", "zone", "name"}, nil)
-	isDiskAttached   = prometheus.NewDesc("is_disk_attached", "tells whether the Disk is attached to some machine", []string{"project", "zone", "name"}, nil)
+	isMachineRunning = prometheus.NewDesc("gce_machine_running", "tells whether the VM is running", []string{"project", "zone", "name"}, nil)
+	isDiskAttached   = prometheus.NewDesc("gce_disk_attached", "tells whether the Disk is attached to some machine", []string{"project", "zone", "name"}, nil)
 )
 
 type ComputeEngineExporter struct {
