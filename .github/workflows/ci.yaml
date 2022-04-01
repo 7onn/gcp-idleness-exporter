@@ -1,0 +1,32 @@
+on: 
+  push:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Test
+        run: go test ./...
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build
+        run: |
+          docker build -t devbytom/gcp-idle-resources-metrics:$(git rev-parse HEAD)
+  
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Login to Docker Hub
+        uses: Mitigram/gh-action-docker-login@main
+        with:
+          username: devbytom
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Publish
+        run: |
+          docker push devbytom/gcp-idle-resources-metrics:$(git rev-parse HEAD)
