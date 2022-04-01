@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "gcp-idle-resources-metrics.fullname" . }}
+  labels:
+    {{- include "gcp-idle-resources-metrics.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: {{ .Values.service.targetPort }}
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "gcp-idle-resources-metrics.selectorLabels" . | nindent 4 }}
