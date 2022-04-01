@@ -28,7 +28,7 @@ docker build -t gcp-idle-resources-metrics .
 docker run -it --rm --network=host \
   -v $(pwd)/credentials.json:/credentials.json \
   -e GOOGLE_APPLICATION_CREDENTIALS=/credentials.json \
-  -e GCP_PROJECT_ID=jusbrasil-155317 \
+  -e GCP_PROJECT_ID= \
   -e GCP_REGIONS=us-east1,us-central1,southamerica-east1 \
   gcp-idle-resources-metrics
 ```
