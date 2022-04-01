@@ -18,7 +18,7 @@ func TestNewComputeEngineExporter(t *testing.T) {
 	for _, tc := range cases {
 		_, err := NewComputeEngineExporter(tc.input)
 		if err != nil {
-			t.Errorf("%s", tc.desc)
+			t.Errorf("%s %+v", tc.desc, err)
 		}
 	}
 }
