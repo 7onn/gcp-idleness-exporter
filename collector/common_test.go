@@ -1,7 +1,10 @@
-package main
+package collector
 
 import (
+	"os"
 	"testing"
+
+	"github.com/go-kit/log"
 )
 
 func TestGetGCPZoneFromURL(t *testing.T) {
@@ -23,7 +26,7 @@ func TestGetGCPZoneFromURL(t *testing.T) {
 	}
 
 	for _, tc := range cases {
-		r := GetGCPZoneFromURL(tc.input)
+		r := GetGCPZoneFromURL(log.NewJSONLogger(os.Stdout), tc.input)
 		if r != tc.expected {
 			t.Errorf("%s want %s got %s instead", tc.desc, tc.expected, r)
 		}

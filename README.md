@@ -1,10 +1,6 @@
 # gcp-idle-resources-metrics
 Identify unused resources at Google Cloud Platform through Prometheus' metrics
 
-## Current supported services
-- Google Compute Engine
-  - Instances
-  - Disks
 
 ## Usage
 
@@ -12,9 +8,42 @@ Set up a service account on the project you want to monitor. You must grant `rol
 
 You can authenticate by setting the [Application Default Credentials](https://developers.google.com/accounts/docs/application-default-credentials) (i.e: Placing the service account's JSON key and setting the environment variable `GOOGLE_APPLICATION_CREDENTIALS=path-to-credentials.json`) or letting the application automatically load the credentials from metadata ([Workload Identity](https://cloud.google.com/kubernetes-engine/docs/how-to/workload-identity) is recommended).
 
-You must set, at least, the project ID and the regions you want to monitor. Either by: 
+You must set at least the project ID and the regions you want to monitor. Either by: 
 - Specifying through command args `--project_id  --regions us-east1,us-central1`  
 - Specifying through environment variables `GCP_PROJECT_ID= GCP_REGIONS=us-east1,us-central1` (if authenticating through metadata, the project doesn't need to be specified)
+
+
+## Development building and running
+Prerequisites:
+* [Go compiler](https://golang.org/dl/)
+
+Building:
+```bash
+make build
+```
+
+Running:
+```bash
+./server -h
+./server --project-id=x --regions=us-central1,us-east1
+```
+
+Running tests
+```bash
+make test
+```
+## Collectors
+
+Current supported APIs:
+- Google Compute Engine
+  - Instances
+  - Disks
+
+
+To enable only some specific collector(s):
+```bash
+./server --collector.disable-defaults --collector.compute_engine ...
+```
 
 
 ### Docker
