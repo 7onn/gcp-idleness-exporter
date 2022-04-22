@@ -27,11 +27,6 @@ jobs:
         with:
           fetch-depth: 1
 
-      - name: Setup Golang
-        uses: actions/setup-go@v1
-        with:
-          go-version: 1.18
-
       - name: Build and Publish
         uses: opspresso/action-docker@v0.4.0
         with:
