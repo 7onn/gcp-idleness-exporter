@@ -36,13 +36,14 @@ make test
 
 Current supported APIs:
 - Google Compute Engine
-  - Instances
-  - Disks
+  - [Instances](https://console.cloud.google.com/compute/instances)
+  - [Disks](https://console.cloud.google.com/compute/disks)
+  - [Snapshots](https://console.cloud.google.com/compute/snapshots)
 
 
 To enable only some specific collector(s):
 ```bash
-./server --collector.disable-defaults --collector.compute_engine ...
+./server --collector.disable-defaults --collector.gce_is_disk_attached --collector.gce_is_old_snapshot
 ```
 
 
