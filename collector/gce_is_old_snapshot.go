@@ -32,7 +32,6 @@ func init() {
 	registerCollector("gce_is_old_snapshot", defaultEnabled, NewGCEIsOldSnapshotCollector)
 }
 
-// NewGCEIsOldSnapshotCollector returns a new Collector exposing gce_disk_has_old_snapshot metrics
 func NewGCEIsOldSnapshotCollector(logger log.Logger, project string, monitoredRegions []string) (Collector, error) {
 	ctx := context.Background()
 	gcpClient, err := NewGCPClient(ctx, compute.ComputeReadonlyScope)
@@ -53,9 +52,7 @@ func NewGCEIsOldSnapshotCollector(logger log.Logger, project string, monitoredRe
 	}, nil
 }
 
-// Update will run each time the metrics endpoint is requested
 func (e *GCEIsOldSnapshotCollector) Update(ch chan<- prometheus.Metric) error {
-	// Protects metrics from concurrent collects.
 	e.mutex.Lock()
 	defer e.mutex.Unlock()
 
@@ -64,15 +61,12 @@ func (e *GCEIsOldSnapshotCollector) Update(ch chan<- prometheus.Metric) error {
 		level.Error(e.logger).Log("msg", fmt.Sprintf("error requesting disk snapshots for project %s", e.project), "err", err)
 	}
 
-	// Snapshots metrics
 	sort.Slice(snapshots.Items, func(i, j int) bool {
 		return snapshots.Items[i].SourceDiskId < snapshots.Items[j].SourceDiskId
 	})
 
 	reportedSnapshots := []string{}
 	for k, snapshot := range snapshots.Items {
-
-		level.Info(e.logger).Log("disk", snapshot.SourceDisk)
 		if lo.Contains(reportedSnapshots, snapshot.Name) {
 			continue
 		}

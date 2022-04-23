@@ -29,7 +29,6 @@ func init() {
 	registerCollector("gce_is_disk_attached", defaultEnabled, NewIsDiskAttachedCollector)
 }
 
-// NewIsDiskAttachedCollector returns a new Collector exposing gce_is_disk_attached metrics
 func NewIsDiskAttachedCollector(logger log.Logger, project string, monitoredRegions []string) (Collector, error) {
 	ctx := context.Background()
 	gcpClient, err := NewGCPClient(ctx, compute.ComputeReadonlyScope)
@@ -50,9 +49,7 @@ func NewIsDiskAttachedCollector(logger log.Logger, project string, monitoredRegi
 	}, nil
 }
 
-// Update will run each time the metrics endpoint is requested
 func (e *GCEIsDiskAttachedCollector) Update(ch chan<- prometheus.Metric) error {
-	// To protect metrics from concurrent collects.
 	e.mutex.Lock()
 	defer e.mutex.Unlock()
 
@@ -87,7 +84,6 @@ func (e *GCEIsDiskAttachedCollector) Update(ch chan<- prometheus.Metric) error {
 		wgZones.Wait()
 	}
 
-	// Disk usage metrics
 	for _, disk := range disks {
 		isAttached := float64(len(disk.Users))
 		ch <- prometheus.MustNewConstMetric(

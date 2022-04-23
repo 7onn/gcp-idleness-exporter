@@ -53,8 +53,8 @@ func NewGCPClient(ctx context.Context, scope string) (client *http.Client, err e
 		googleClient.Transport,
 		rehttp.RetryAll(
 			rehttp.RetryMaxRetries(GCPMaxRetries),
-			rehttp.RetryStatuses(GCPRetryStatuses...)), // Cloud support suggests retrying on 503 errors
-		rehttp.ExpJitterDelay(GCPBackoffJitterBase, GCPMaxBackoffDuration), // Set timeout to <10s as that is Prometheus' default timeout
+			rehttp.RetryStatuses(GCPRetryStatuses...)),
+		rehttp.ExpJitterDelay(GCPBackoffJitterBase, GCPMaxBackoffDuration),
 	)
 	return googleClient, nil
 }

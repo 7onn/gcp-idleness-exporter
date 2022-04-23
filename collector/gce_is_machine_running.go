@@ -29,7 +29,6 @@ func init() {
 	registerCollector("gce_is_machine_running", defaultEnabled, NewGCEIsMachineRunningCollector)
 }
 
-// NewGCEIsMachineRunningCollector returns a new Collector exposing gce_is_machine_running metrics
 func NewGCEIsMachineRunningCollector(logger log.Logger, project string, monitoredRegions []string) (Collector, error) {
 	ctx := context.Background()
 	gcpClient, err := NewGCPClient(ctx, compute.ComputeReadonlyScope)
@@ -50,9 +49,7 @@ func NewGCEIsMachineRunningCollector(logger log.Logger, project string, monitore
 	}, nil
 }
 
-// Update will run each time the metrics endpoint is requested
 func (e *GCEIsMachineRunningCollector) Update(ch chan<- prometheus.Metric) error {
-	// Protects metrics from concurrent collects.
 	e.mutex.Lock()
 	defer e.mutex.Unlock()
 
@@ -87,7 +84,6 @@ func (e *GCEIsMachineRunningCollector) Update(ch chan<- prometheus.Metric) error
 		wgZones.Wait()
 	}
 
-	// VM usage metrics
 	for _, vm := range vms {
 		var isRunning float64
 		if vm.Status == "RUNNING" {
