@@ -39,7 +39,8 @@ Current supported APIs:
   - [Instances](https://console.cloud.google.com/compute/instances)
   - [Disks](https://console.cloud.google.com/compute/disks)
   - [Snapshots](https://console.cloud.google.com/compute/snapshots)
-
+- Dataproc
+  - [Clusters](https://console.cloud.google.com/dataproc/clusters)
 
 To enable only some specific collector(s):
 ```bash
