@@ -4,7 +4,9 @@ Identify unused resources at Google Cloud Platform through Prometheus' metrics
 
 ## Usage
 
-Set up a service account on the project you want to monitor. You must grant `roles/compute.viewer` to it.
+Set up a service account on the project you want to monitor. To comprehend all collectors' required permissions, you have to grant: 
+- `roles/compute.viewer`
+- `roles/dataproc.viewer`
 
 You can authenticate by setting the [Application Default Credentials](https://developers.google.com/accounts/docs/application-default-credentials) (i.e: Placing the service account's JSON key and setting the environment variable `GOOGLE_APPLICATION_CREDENTIALS=path-to-credentials.json`) or letting the application automatically load the credentials from metadata ([Workload Identity](https://cloud.google.com/kubernetes-engine/docs/how-to/workload-identity) is recommended).
 
