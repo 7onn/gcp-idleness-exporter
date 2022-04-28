@@ -13,7 +13,7 @@ import (
 )
 
 var (
-	isDataprocClusterRunning = prometheus.NewDesc("dataproc_is_cluster_running", "tells whether the Dataproc cluster is running", []string{"project", "zone", "name"}, nil)
+	isDataprocClusterRunning = prometheus.NewDesc("dataproc_is_cluster_running", "tells whether the Dataproc cluster is running", []string{"project", "region", "zone", "name"}, nil)
 )
 
 type DataprocIsClusterRunningCollector struct {
@@ -76,6 +76,7 @@ func (e *DataprocIsClusterRunningCollector) Update(ch chan<- prometheus.Metric) 
 						prometheus.GaugeValue,
 						1.,
 						e.project,
+						region,
 						zone,
 						cluster.ClusterName)
 				} else {
@@ -84,6 +85,7 @@ func (e *DataprocIsClusterRunningCollector) Update(ch chan<- prometheus.Metric) 
 						prometheus.GaugeValue,
 						0.,
 						e.project,
+						region,
 						zone,
 						cluster.ClusterName)
 				}
