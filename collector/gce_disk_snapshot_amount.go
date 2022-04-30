@@ -15,10 +15,10 @@ import (
 )
 
 var (
-	isOldSnapshot = prometheus.NewDesc("gce_is_old_snapshot", "tells whether the Disk has unnecessary old snapshots", []string{"project", "disk", "snapshot"}, nil)
+	diskSnapshotAmount = prometheus.NewDesc("gce_disk_snapshot_amount", "tells how many snapshots the Disk has", []string{"project", "disk"}, nil)
 )
 
-type GCEIsOldSnapshotCollector struct {
+type GCEDiskSnapshotAmountCollector struct {
 	logger           log.Logger
 	service          *compute.Service
 	project          string
@@ -27,10 +27,10 @@ type GCEIsOldSnapshotCollector struct {
 }
 
 func init() {
-	registerCollector("gce_is_old_snapshot", defaultEnabled, NewGCEIsOldSnapshotCollector)
+	registerCollector("gce_disk_snapshot_amount", defaultEnabled, NewGCEDiskSnapshotAmountCollector)
 }
 
-func NewGCEIsOldSnapshotCollector(logger log.Logger, project string, monitoredRegions []string) (Collector, error) {
+func NewGCEDiskSnapshotAmountCollector(logger log.Logger, project string, monitoredRegions []string) (Collector, error) {
 	ctx := context.Background()
 	gcpClient, err := NewGCPClient(ctx, compute.ComputeReadonlyScope)
 	if err != nil {
@@ -42,7 +42,7 @@ func NewGCEIsOldSnapshotCollector(logger log.Logger, project string, monitoredRe
 		level.Error(logger).Log("msg", "Unable to create service", "err", err)
 	}
 
-	return &GCEIsOldSnapshotCollector{
+	return &GCEDiskSnapshotAmountCollector{
 		logger:           logger,
 		service:          computeService,
 		project:          project,
@@ -50,7 +50,7 @@ func NewGCEIsOldSnapshotCollector(logger log.Logger, project string, monitoredRe
 	}, nil
 }
 
-func (e *GCEIsOldSnapshotCollector) Update(ch chan<- prometheus.Metric) error {
+func (e *GCEDiskSnapshotAmountCollector) Update(ch chan<- prometheus.Metric) error {
 	e.mutex.Lock()
 	defer e.mutex.Unlock()
 
@@ -64,37 +64,24 @@ func (e *GCEIsOldSnapshotCollector) Update(ch chan<- prometheus.Metric) error {
 		return snapshots.Items[i].SourceDiskId < snapshots.Items[j].SourceDiskId
 	})
 
+	disks := map[string]int{}
+
 	reportedSnapshots := []string{}
-	for k, snapshot := range snapshots.Items {
+	for _, snapshot := range snapshots.Items {
 		if lo.Contains(reportedSnapshots, snapshot.Name) {
 			continue
 		}
+		reportedSnapshots = append(reportedSnapshots, snapshot.Name)
+		disks[GetDiskNameFromURL(e.logger, snapshot.SourceDisk)]++
+	}
 
-		if k < len(snapshots.Items)-1 {
-			next := snapshots.Items[k+1]
-			if snapshot.SourceDiskId == next.SourceDiskId {
-				if snapshot.CreationTimestamp < next.CreationTimestamp {
-					ch <- prometheus.MustNewConstMetric(
-						isOldSnapshot,
-						prometheus.GaugeValue,
-						1,
-						e.project,
-						GetDiskNameFromURL(e.logger, snapshot.SourceDisk),
-						snapshot.Name)
-					reportedSnapshots = append(reportedSnapshots, snapshot.Name)
-
-				} else {
-					ch <- prometheus.MustNewConstMetric(
-						isOldSnapshot,
-						prometheus.GaugeValue,
-						1,
-						e.project,
-						GetDiskNameFromURL(e.logger, next.SourceDisk),
-						next.Name)
-					reportedSnapshots = append(reportedSnapshots, next.Name)
-				}
-			}
-		}
+	for disk, amount := range disks {
+		ch <- prometheus.MustNewConstMetric(
+			diskSnapshotAmount,
+			prometheus.GaugeValue,
+			float64(amount),
+			e.project,
+			disk)
 	}
 
 	return nil
