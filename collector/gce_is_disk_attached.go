@@ -71,11 +71,12 @@ func (e *GCEIsDiskAttachedCollector) Update(ch chan<- prometheus.Metric) error {
 
 		for _, z := range r.Zones {
 			zone := GetGCPZoneFromURL(e.logger, z)
-			ch := make(chan struct{})
-			go func(ch chan struct{}) {
+			go func(ch chan<- prometheus.Metric) {
 				regionalDisks, err := e.service.Disks.List(e.project, zone).Do()
 				if err != nil {
 					level.Error(e.logger).Log("msg", fmt.Sprintf("error requesting machine disks for project %s in zone %s", e.project, zone), "err", err)
+					wgZones.Done()
+					return
 				}
 				disks = append(disks, regionalDisks.Items...)
 				wgZones.Done()

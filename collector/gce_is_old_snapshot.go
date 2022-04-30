@@ -59,6 +59,7 @@ func (e *GCEIsOldSnapshotCollector) Update(ch chan<- prometheus.Metric) error {
 	snapshots, err := e.service.Snapshots.List(e.project).Do()
 	if err != nil {
 		level.Error(e.logger).Log("msg", fmt.Sprintf("error requesting disk snapshots for project %s", e.project), "err", err)
+		return err
 	}
 
 	sort.Slice(snapshots.Items, func(i, j int) bool {

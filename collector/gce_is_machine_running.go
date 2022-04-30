@@ -71,11 +71,12 @@ func (e *GCEIsMachineRunningCollector) Update(ch chan<- prometheus.Metric) error
 
 		for _, z := range r.Zones {
 			zone := GetGCPZoneFromURL(e.logger, z)
-			ch := make(chan struct{})
-			go func(ch chan struct{}) {
+			go func(ch chan<- prometheus.Metric) {
 				regionalInstances, err := e.service.Instances.List(e.project, zone).Do()
 				if err != nil {
 					level.Error(e.logger).Log("msg", fmt.Sprintf("error requesting machines for project %s in zone %s", e.project, zone), "err", err)
+					wgZones.Done()
+					return
 				}
 				vms = append(vms, regionalInstances.Items...)
 				wgZones.Done()
