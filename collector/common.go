@@ -34,6 +34,26 @@ func GetGCPZoneFromURL(logger log.Logger, z string) string {
 	return zone
 }
 
+func GetDiskNameFromURL(logger log.Logger, z string) string {
+	u, err := url.Parse(z)
+	if err != nil {
+
+		level.Error(logger).Log("msg", "error parsing Zone name", "err", err)
+	}
+
+	parts := strings.Split(u.Path, "/")
+
+	var disk string
+	for i := 0; i < len(parts); i++ {
+		if parts[i] == "disks" {
+			disk = parts[i+1]
+			i++
+		}
+	}
+
+	return disk
+}
+
 var (
 	GCPHttpTimeout        time.Duration
 	GCPMaxRetries         int
