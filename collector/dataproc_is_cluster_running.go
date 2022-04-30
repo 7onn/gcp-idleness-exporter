@@ -60,6 +60,8 @@ func (e *DataprocIsClusterRunningCollector) Update(ch chan<- prometheus.Metric) 
 			regionalDataprocClusters, err := e.service.Projects.Regions.Clusters.List(e.project, region).Do()
 			if err != nil {
 				level.Error(e.logger).Log("msg", fmt.Sprintf("Failure when querying Dataproc Clusters in %s at %s", e.project, region), "err", err)
+				wgRegions.Done()
+				return
 			}
 
 			for _, cluster := range regionalDataprocClusters.Clusters {
