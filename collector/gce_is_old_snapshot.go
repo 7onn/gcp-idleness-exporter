@@ -19,11 +19,10 @@ var (
 )
 
 type GCEIsOldSnapshotCollector struct {
-	logger           log.Logger
-	service          *compute.Service
-	project          string
-	monitoredRegions []string
-	mutex            sync.RWMutex
+	logger  log.Logger
+	service *compute.Service
+	project string
+	mutex   sync.RWMutex
 }
 
 func init() {
@@ -43,10 +42,9 @@ func NewGCEIsOldSnapshotCollector(logger log.Logger, project string, monitoredRe
 	}
 
 	return &GCEIsOldSnapshotCollector{
-		logger:           logger,
-		service:          computeService,
-		project:          project,
-		monitoredRegions: monitoredRegions,
+		logger:  logger,
+		service: computeService,
+		project: project,
 	}, nil
 }
 
