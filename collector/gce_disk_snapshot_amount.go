@@ -3,7 +3,6 @@ package collector
 import (
 	"context"
 	"fmt"
-	"sort"
 	"sync"
 
 	"github.com/go-kit/log"
@@ -60,22 +59,17 @@ func (e *GCEDiskSnapshotAmountCollector) Update(ch chan<- prometheus.Metric) err
 		return err
 	}
 
-	sort.Slice(snapshots.Items, func(i, j int) bool {
-		return snapshots.Items[i].SourceDiskId < snapshots.Items[j].SourceDiskId
-	})
-
-	disks := map[string]int{}
-
+	diskAmounts := map[string]int{}
 	reportedSnapshots := []string{}
 	for _, snapshot := range snapshots.Items {
 		if lo.Contains(reportedSnapshots, snapshot.Name) {
 			continue
 		}
 		reportedSnapshots = append(reportedSnapshots, snapshot.Name)
-		disks[GetDiskNameFromURL(e.logger, snapshot.SourceDisk)]++
+		diskAmounts[GetDiskNameFromURL(e.logger, snapshot.SourceDisk)]++
 	}
 
-	for disk, amount := range disks {
+	for disk, amount := range diskAmounts {
 		ch <- prometheus.MustNewConstMetric(
 			diskSnapshotAmount,
 			prometheus.GaugeValue,
