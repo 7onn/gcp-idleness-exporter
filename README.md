@@ -1,4 +1,4 @@
-# gcp-idle-resources-metrics
+# gcp-idleness-exporter
 Identify unused resources at Google Cloud Platform through Prometheus' metrics
 
 
@@ -56,14 +56,14 @@ cp ~/.config/gcloud/application_default_credentials.json ./credentials.json
 
 chmod 444 credentials.json
 
-docker build -t gcp-idle-resources-metrics . 
+docker build -t gcp-idleness-exporter . 
 
 docker run -it --rm --network=host \
   -v $(pwd)/credentials.json:/credentials.json \
   -e GOOGLE_APPLICATION_CREDENTIALS=/credentials.json \
   -e GCP_PROJECT_ID= \
   -e GCP_REGIONS=us-east1,us-central1,southamerica-east1 \
-  gcp-idle-resources-metrics
+  gcp-idleness-exporter
 ```
 Check the exported [metrics](http://localhost:5000/metrics).
 
@@ -77,10 +77,10 @@ helm search repo 7onn
 
 Export its default values
 ```bash
-helm show values 7onn/gcp-idle-resources-metrics > values.yaml
+helm show values 7onn/gcp-idleness-exporter > values.yaml
 ```
 
 Edit the values according to your needs then install the application
 ```bash
-helm upgrade -i gcp-idle-resources-metrics --values values.yaml 7onn/gcp-idle-resources-metrics
+helm upgrade -i gcp-idleness-exporter --values values.yaml 7onn/gcp-idleness-exporter
 ```
