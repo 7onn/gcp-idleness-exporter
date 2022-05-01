@@ -24,11 +24,16 @@ func init() {
 	registerCollector("gce_disk_snapshot", defaultEnabled, NewGCEDiskSnapshotCollector)
 }
 
+func (e *GCEDiskSnapshotCollector) ListMetrics() []string {
+	return []string{"gce_disk_snapshot_age_days", "gce_disk_snapshot_amount"}
+}
+
 type GCEDiskSnapshotCollector struct {
 	logger           log.Logger
 	service          *compute.Service
 	project          string
 	monitoredRegions []string
+	metrics          []string
 	mutex            sync.RWMutex
 }
 
@@ -49,6 +54,7 @@ func NewGCEDiskSnapshotCollector(logger log.Logger, project string, monitoredReg
 		service:          computeService,
 		project:          project,
 		monitoredRegions: monitoredRegions,
+		metrics:          []string{"gce_disk_snapshot_amount", "gce_disk_snapshot_age_days"},
 	}, nil
 }
 

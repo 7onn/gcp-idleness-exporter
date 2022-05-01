@@ -29,6 +29,10 @@ func init() {
 	registerCollector("gce_is_machine_running", defaultEnabled, NewGCEIsMachineRunningCollector)
 }
 
+func (e *GCEIsMachineRunningCollector) ListMetrics() []string {
+	return []string{"gce_is_machine_running"}
+}
+
 func NewGCEIsMachineRunningCollector(logger log.Logger, project string, monitoredRegions []string) (Collector, error) {
 	ctx := context.Background()
 	gcpClient, err := NewGCPClient(ctx, compute.ComputeReadonlyScope)

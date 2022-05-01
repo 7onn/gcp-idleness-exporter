@@ -50,8 +50,12 @@ Current supported APIs:
 
 To enable only some specific collector(s):
 ```bash
-./server --collector.disable-defaults --collector.gce_is_disk_attached --collector.gce_is_old_snapshot
+./server --collector.disable-defaults --collector.gce_is_disk_attached --collector.gce_disk_snapshot
 ```
+
+
+## Available metrics
+Visit our [wiki](https://github.com/7onn/gcp-idleness-exporter/wiki/Available-metrics) for more information.
 
 
 ### Docker
