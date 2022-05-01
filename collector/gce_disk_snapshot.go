@@ -3,7 +3,9 @@ package collector
 import (
 	"context"
 	"fmt"
+	"math"
 	"sync"
+	"time"
 
 	"github.com/go-kit/log"
 	"github.com/go-kit/log/level"
@@ -14,10 +16,15 @@ import (
 )
 
 var (
-	diskSnapshotAmount = prometheus.NewDesc("gce_disk_snapshot_amount", "tells how many snapshots the Disk has", []string{"project", "disk"}, nil)
+	metricDiskSnapshotAge    = prometheus.NewDesc("gce_disk_snapshot_age_days", "tells how many days the snapshot has", []string{"project", "disk", "snapshot"}, nil)
+	metricDiskSnapshotAmount = prometheus.NewDesc("gce_disk_snapshot_amount", "tells how many snapshots the Disk has", []string{"project", "disk"}, nil)
 )
 
-type GCEDiskSnapshotAmountCollector struct {
+func init() {
+	registerCollector("gce_disk_snapshot", defaultEnabled, NewGCEDiskSnapshotCollector)
+}
+
+type GCEDiskSnapshotCollector struct {
 	logger           log.Logger
 	service          *compute.Service
 	project          string
@@ -25,11 +32,7 @@ type GCEDiskSnapshotAmountCollector struct {
 	mutex            sync.RWMutex
 }
 
-func init() {
-	registerCollector("gce_disk_snapshot_amount", defaultEnabled, NewGCEDiskSnapshotAmountCollector)
-}
-
-func NewGCEDiskSnapshotAmountCollector(logger log.Logger, project string, monitoredRegions []string) (Collector, error) {
+func NewGCEDiskSnapshotCollector(logger log.Logger, project string, monitoredRegions []string) (Collector, error) {
 	ctx := context.Background()
 	gcpClient, err := NewGCPClient(ctx, compute.ComputeReadonlyScope)
 	if err != nil {
@@ -41,7 +44,7 @@ func NewGCEDiskSnapshotAmountCollector(logger log.Logger, project string, monito
 		level.Error(logger).Log("msg", "Unable to create service", "err", err)
 	}
 
-	return &GCEDiskSnapshotAmountCollector{
+	return &GCEDiskSnapshotCollector{
 		logger:           logger,
 		service:          computeService,
 		project:          project,
@@ -49,7 +52,7 @@ func NewGCEDiskSnapshotAmountCollector(logger log.Logger, project string, monito
 	}, nil
 }
 
-func (e *GCEDiskSnapshotAmountCollector) Update(ch chan<- prometheus.Metric) error {
+func (e *GCEDiskSnapshotCollector) Update(ch chan<- prometheus.Metric) error {
 	e.mutex.Lock()
 	defer e.mutex.Unlock()
 
@@ -59,19 +62,33 @@ func (e *GCEDiskSnapshotAmountCollector) Update(ch chan<- prometheus.Metric) err
 		return err
 	}
 
-	diskAmounts := map[string]int{}
+	diskSnapshotAmount := map[string]int{}
 	reportedSnapshots := []string{}
 	for _, snapshot := range snapshots.Items {
 		if lo.Contains(reportedSnapshots, snapshot.Name) {
 			continue
 		}
 		reportedSnapshots = append(reportedSnapshots, snapshot.Name)
-		diskAmounts[GetDiskNameFromURL(e.logger, snapshot.SourceDisk)]++
+		diskSnapshotAmount[GetDiskNameFromURL(e.logger, snapshot.SourceDisk)]++
+
+		snapshotCreationTimestamp, err := time.Parse(time.RFC3339, snapshot.CreationTimestamp)
+		if err != nil {
+			level.Error(e.logger).Log("msg", fmt.Sprintf("error parsing %s snapshot's CreationTimestamp for project %s", snapshot.Name, e.project), "err", err)
+			continue
+		}
+
+		ch <- prometheus.MustNewConstMetric(
+			metricDiskSnapshotAge,
+			prometheus.GaugeValue,
+			math.Floor(time.Since(snapshotCreationTimestamp).Hours()/24),
+			e.project,
+			GetDiskNameFromURL(e.logger, snapshot.SourceDisk),
+			snapshot.Name)
 	}
 
-	for disk, amount := range diskAmounts {
+	for disk, amount := range diskSnapshotAmount {
 		ch <- prometheus.MustNewConstMetric(
-			diskSnapshotAmount,
+			metricDiskSnapshotAmount,
 			prometheus.GaugeValue,
 			float64(amount),
 			e.project,
