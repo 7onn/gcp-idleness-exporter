@@ -17,13 +17,13 @@ import (
 var (
 	scrapeDurationDesc = prometheus.NewDesc(
 		prometheus.BuildFQName("gcp", "scrape", "collector_duration_seconds"),
-		"gcp_idle_resources_metrics: Duration of a collector scrape.",
+		"gcp_idleness_exporter: Duration of a collector scrape.",
 		[]string{"collector"},
 		nil,
 	)
 	scrapeSuccessDesc = prometheus.NewDesc(
 		prometheus.BuildFQName("gcp", "scrape", "collector_success"),
-		"gcp_idle_resources_metrics: Whether a collector succeeded.",
+		"gcp_idleness_exporter: Whether a collector succeeded.",
 		[]string{"collector"},
 		nil,
 	)
@@ -156,6 +156,9 @@ func execute(name string, c Collector, ch chan<- prometheus.Metric, logger log.L
 type Collector interface {
 	// Get new metrics and expose them via prometheus registry.
 	Update(ch chan<- prometheus.Metric) error
+
+	// List available metrics
+	ListMetrics() []string
 }
 
 // ErrNoData indicates the collector found no data to collect, but had no other error.

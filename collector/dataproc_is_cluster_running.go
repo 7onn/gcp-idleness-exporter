@@ -28,6 +28,10 @@ func init() {
 	registerCollector("dataproc_is_cluster_running", defaultEnabled, NewDataprocIsClusterRunningCollector)
 }
 
+func (e *DataprocIsClusterRunningCollector) ListMetrics() []string {
+	return []string{"dataproc_is_cluster_running"}
+}
+
 func NewDataprocIsClusterRunningCollector(logger log.Logger, project string, monitoredRegions []string) (Collector, error) {
 	ctx := context.Background()
 	gcpClient, err := NewGCPClient(ctx, dataproc.CloudPlatformScope)

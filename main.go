@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"os"
 	"os/user"
-	"sort"
 	"strings"
 
 	stdlog "log"
@@ -90,20 +89,14 @@ func (h *MetricsHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		level.Error(h.logger).Log("msg", "couldn't create collector", "err", err)
 	}
 
-	level.Info(h.logger).Log("msg", "Enabled collectors")
-	collectors := []string{}
-	for n := range gcpCollector.Collectors {
-		collectors = append(collectors, n)
-	}
-	sort.Strings(collectors)
-	for _, c := range collectors {
-		level.Info(h.logger).Log("collector", c)
+	for n, c := range gcpCollector.Collectors {
+		level.Info(h.logger).Log("collector", n, "metrics", fmt.Sprintf("%+v", c.ListMetrics()))
 	}
 
 	pr := prometheus.NewRegistry()
-	pr.MustRegister(version.NewCollector("gcp_idle_resources_metrics"))
+	pr.MustRegister(version.NewCollector("gcp_idleness_exporter"))
 	if err = pr.Register(gcpCollector); err != nil {
-		level.Error(h.logger).Log("msg", "couldn't register gcp_idle_resources_metrics collector", "err", err)
+		level.Error(h.logger).Log("msg", "couldn't register gcp_idleness_exporter collector", "err", err)
 	}
 	handler := promhttp.HandlerFor(
 		prometheus.Gatherers{h.exporterMetricsRegistry, pr},

@@ -29,6 +29,10 @@ func init() {
 	registerCollector("gce_is_disk_attached", defaultEnabled, NewIsDiskAttachedCollector)
 }
 
+func (e *GCEIsDiskAttachedCollector) ListMetrics() []string {
+	return []string{"gce_is_disk_attached"}
+}
+
 func NewIsDiskAttachedCollector(logger log.Logger, project string, monitoredRegions []string) (Collector, error) {
 	ctx := context.Background()
 	gcpClient, err := NewGCPClient(ctx, compute.ComputeReadonlyScope)
