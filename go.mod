@@ -1,4 +1,4 @@
-module github.com/7onn/gcp-idle-resources-metrics
+module github.com/7onn/gcp-idleness-exporter
 
 go 1.18
 

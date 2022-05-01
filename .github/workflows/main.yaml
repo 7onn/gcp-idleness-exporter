@@ -35,6 +35,6 @@ jobs:
           USERNAME: devbytom
           PASSWORD: ${{ secrets.DOCKERHUB_TOKEN }}
           DOCKERFILE: "Dockerfile"
-          IMAGE_NAME: "devbytom/gcp-idle-resources-metrics"
+          IMAGE_NAME: "devbytom/gcp-idleness-exporter"
           TAG_NAME: ${{ github.sha }}
           LATEST: "true"

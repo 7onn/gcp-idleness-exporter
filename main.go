@@ -17,7 +17,7 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 
 	"cloud.google.com/go/compute/metadata"
-	"github.com/7onn/gcp-idle-resources-metrics/collector"
+	"github.com/7onn/gcp-idleness-exporter/collector"
 	"github.com/go-kit/log/level"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/common/promlog"
@@ -125,7 +125,7 @@ func main() {
 
 	promlogConfig := &promlog.Config{}
 	flag.AddFlags(kingpin.CommandLine, promlogConfig)
-	kingpin.Version(version.Print("gcp-idle-resources-metrics"))
+	kingpin.Version(version.Print("gcp-idleness-exporter"))
 	kingpin.CommandLine.UsageWriter(os.Stdout)
 	kingpin.HelpFlag.Short('h')
 	kingpin.Parse()
@@ -141,10 +141,10 @@ func main() {
 	if *disableDefaultCollectors {
 		collector.DisableDefaultCollectors()
 	}
-	level.Info(logger).Log("msg", "Starting gcp-idle-resources-metrics", "version", version.Info())
+	level.Info(logger).Log("msg", "Starting gcp-idleness-exporter", "version", version.Info())
 	level.Info(logger).Log("msg", "Build context", "build_context", version.BuildContext())
 	if user, err := user.Current(); err == nil && user.Uid == "0" {
-		level.Warn(logger).Log("msg", "gcp-idle-resources-metrics is running as root user. This exporter is designed to run as unpriviledged user, root is not required.")
+		level.Warn(logger).Log("msg", "gcp-idleness-exporter is running as root user. This exporter is designed to run as unpriviledged user, root is not required.")
 	}
 
 	// Detect Project ID
