@@ -1,4 +1,7 @@
 # gcp-idleness-exporter
+[![License](https://img.shields.io/badge/license-GPL3-blue)](https://www.gnu.org/licenses/gpl-3.0.en.html)
+[![](https://github.com/7onn/gcp-idleness-exporter/workflows/Release%20Charts/badge.svg?branch=main)](https://github.com/7onn/gcp-idleness-exporter/actions)
+
 Identify unused resources at Google Cloud Platform through Prometheus' metrics
 
 
