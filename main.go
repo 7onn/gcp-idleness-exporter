@@ -186,10 +186,10 @@ func main() {
 		w.Write([]byte(`
 			<html>
 				<head>
-					<title>GCP idle resources metrics exporter</title>
+					<title>gcp-idleness-exporter</title>
 				</head>
 				<body>
-					<h1>GCP idle resources metrics exporter</h1>
+					<h1>GCP idleness exporter</h1>
 					<p>
 						<a href='/metrics'>Metrics</a>
 					</p>
