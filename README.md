@@ -1,5 +1,5 @@
 # gcp-idleness-exporter
-[![License](https://img.shields.io/badge/license-GPL3-blue)](https://www.gnu.org/licenses/gpl-3.0.en.html)
+[![License](https://img.shields.io/badge/license-Apache%202.0-blue)](https://www.apache.org/licenses/LICENSE-2.0.html)
 [![.github/workflows/main.yaml](https://github.com/7onn/gcp-idleness-exporter/actions/workflows/main.yaml/badge.svg)](https://github.com/7onn/gcp-idleness-exporter/actions/workflows/main.yaml)
 [![Release](https://github.com/7onn/gcp-idleness-exporter/actions/workflows/release.yaml/badge.svg)](https://github.com/7onn/gcp-idleness-exporter/actions/workflows/release.yaml)
 
