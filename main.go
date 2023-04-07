@@ -17,13 +17,13 @@ import (
 
 	"cloud.google.com/go/compute/metadata"
 	"github.com/7onn/gcp-idleness-exporter/collector"
+	"github.com/alecthomas/kingpin/v2"
 	"github.com/go-kit/log/level"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/common/promlog"
 	"github.com/prometheus/common/promlog/flag"
 	"github.com/prometheus/common/version"
 	"github.com/tidwall/gjson"
-	"gopkg.in/alecthomas/kingpin.v2"
 )
 
 var (
